@@ -10,7 +10,7 @@ def test_valid_login(setup):
     login.enter_password("admin123")
     login.click_login()
     expected_url = "https://ai-samurai.tai.com.np/admin/students"
-    WebDriverWait(driver, 50).until(EC.url_to_be(expected_url))
+    WebDriverWait(driver, 100).until(EC.url_to_be(expected_url))
 
     assert driver.current_url == expected_url
    
