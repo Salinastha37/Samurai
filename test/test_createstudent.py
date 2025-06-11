@@ -6,9 +6,14 @@ from faker import Faker
 from selenium import webdriver
 from pages.student_registration import RegistrationPage
 from pages.admin_loginpage import LoginPage
+from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.by import By
 
 
+
+fake_en = Faker('en_US')
 fake = Faker('ja_JP')
 
 def generate_unique_email():
@@ -21,13 +26,7 @@ def get_random_image_path(folder_path="test/images"):
 def get_random_gender():
     return random.choice(["Male", "Female", "Other"])
 
-# @pytest.fixture
-# def driver():
-#     driver = webdriver.Chrome()
-#     driver.maximize_window()
-#     driver.get("https://ai-samurai.tai.com.np/admin/add-student")  # 🔁 Replace this with actual URL
-#     yield driver
-#     driver.quit()
+
 
 def test_registration_form(driver):
     
@@ -38,13 +37,34 @@ def test_registration_form(driver):
     login.enter_password("admin123")
     login.click_login()
     
+    #  Wait for URL to confirm successful login (update if the URL differs)
+    try:
+        WebDriverWait(driver, 10).until(
+            EC.url_contains("/admin/students")  # Adjust this path if needed
+        )
+    except TimeoutException:
+        assert False, "Login failed — Student URL did not load"
+
+     #  Click "Create Student" button
+    try:
+        create_btn = WebDriverWait(driver, 10).until(
+    EC.element_to_be_clickable((By.XPATH, "/html/body/div/div/div/div/div/div[1]/button"))
+    )
+        create_btn.click()
+    except TimeoutException:
+        assert False, "'Create Student' button not found or not clickable"
+
+     
+    wait = WebDriverWait(driver, 50)  # wait up to 10 seconds
+    wait.until(EC.url_contains("/add-student"))
+    
     driver.get("https://ai-samurai.tai.com.np/admin/add-student")
     reg_page = RegistrationPage(driver)
 
     test_data = {
         "last-name": fake.last_name(),
         "firstName": fake.first_name(),
-        "lastNameKatakana'": "タナカ",
+        "lastNameKatakana": "タナカ",
         "firstNameKatakana": "タロウ",
         "phone": fake.msisdn()[:11],
         "email": generate_unique_email(),
@@ -61,8 +81,13 @@ def test_registration_form(driver):
     }
 
     reg_page.fill_registration_form(test_data)
-    reg_page.submit_form()
+    reg_page.Register_Now()
 
-    # Basic success check (customize this for your app)
-    assert "Registration successful" in driver.page_source
+    
+    # Wait for redirect to student list page
+    WebDriverWait(driver, 10).until(
+     EC.url_contains("/students")
+    )
 
+# Confirm redirect occurred
+    assert "/students" in driver.current_url
