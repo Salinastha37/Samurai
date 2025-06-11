@@ -2,6 +2,7 @@ import os
 import uuid
 import random
 import pytest
+import pykakasi
 from faker import Faker
 from selenium import webdriver
 from pages.student_registration import RegistrationPage
@@ -15,6 +16,14 @@ from selenium.webdriver.common.by import By
 
 fake_en = Faker('en_US')
 fake = Faker('ja_JP')
+# Convert to Katakana
+def convert_to_katakana(name):
+    kakasi = pykakasi.kakasi()
+    kakasi.setMode("H", "K")
+    kakasi.setMode("a", "K")
+    kakasi.setMode("r", "Hepburn")
+    conv = kakasi.getConverter()
+    return conv.do(name)
 
 def generate_unique_email():
     return f"user_{uuid.uuid4().hex}@test.com"
@@ -62,8 +71,8 @@ def test_registration_form(driver):
     reg_page = RegistrationPage(driver)
 
     test_data = {
-        "last-name": fake.last_name(),
-        "firstName": fake.first_name(),
+        "last-name": fake_en.last_name(),
+        "firstName": fake_en.first_name(),
         "lastNameKatakana": "タナカ",
         "firstNameKatakana": "タロウ",
         "phone": fake.msisdn()[:11],

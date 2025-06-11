@@ -18,7 +18,7 @@ class RegistrationPage:
      self.driver.find_element(By.XPATH, "//*[@id='email']").send_keys(data['email'])
 
      #gender_element = self.driver.find_element(By.XPATH, "label[@for='gender']")
-     #Select(gender_element).select_by_visible_text(data['gender'])
+    # Select(gender_element).select_by_visible_text(data['gender'])
 
     # More reliable selectors for dynamic IDs
      self.driver.find_element(By.XPATH, '/html/body/div/div/div/div/div/div[2]/form/div[6]/div/div/input').send_keys(data['dob'])
