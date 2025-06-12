@@ -5,9 +5,7 @@ from selenium.webdriver.support import expected_conditions as EC
 class LoginPage:
     def __init__(self, driver):
         self.driver = driver
-        self.wait = WebDriverWait(driver, 10)  # 10 seconds wait
-
-        # Define locators
+        self.wait = WebDriverWait(driver, 10)
         self.email_input = (By.NAME, "email")
         self.password_input = (By.NAME, "password")
         self.login_button = (By.CSS_SELECTOR, "button[type='submit']")
