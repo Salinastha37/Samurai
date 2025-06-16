@@ -27,39 +27,14 @@ class RegistrationPage:
             if data['gender'].strip().lower() in label:
                 button.click()
                 break
-
-        # ✅ Date of Birth Picker - Enhanced (Option 3)
-        dob = datetime.strptime(data['dob'], "%Y-%m-%d")
-        year, month, day = dob.year, dob.strftime("%B"), str(dob.day)
-
-        # Click date input (by placeholder or visible input field)
+        
+        # Fill Date of Birth
+        dob_value = data["dob"]
         dob_input = WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//input[@placeholder='YYYY-MM-DD']"))
-        )
-        dob_input.click()
+        EC.presence_of_element_located((By.XPATH, "//input[@placeholder='YYYY/MM/DD']"))
+       )
+        dob_input.send_keys(dob_value)
 
-        # Open year selector
-        WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//button[@aria-label='Choose year']"))
-        ).click()
-
-        # Select year
-        WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, f"//div[contains(@class,'MuiPickersYear') and text()='{year}']"))
-        ).click()
-
-        # Select month if needed (optional – some pickers go directly to calendar)
-        try:
-            WebDriverWait(self.driver, 3).until(
-                EC.element_to_be_clickable((By.XPATH, f"//button[text()='{month}']"))
-            ).click()
-        except:
-            pass  # Month might already be selected
-
-        # Select day
-        WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, f"//button[normalize-space()='{day}']"))
-        ).click()
 
         # Upload image
         self.driver.find_element(By.XPATH, "//input[@type='file']").send_keys(data['image_path'])
