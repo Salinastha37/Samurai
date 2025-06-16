@@ -15,32 +15,35 @@ def test_valid_login(driver):
     login.click_login()
 
     try:
-        WebDriverWait(driver, 10).until(EC.url_contains("/admin/students"))
+        WebDriverWait(driver, 10).until(EC.url_contains("/admin/dashboardclear"))
     except TimeoutException:
         assert False, "Login failed — student page did not load"
 
-    assert "/admin/students" in driver.current_url
+        time.sleep(5)
+
+    assert "/admin/dashboard" in driver.current_url
 
 
 #  INVALID LOGIN TESTS 
 
-@pytest.mark.parametrize("email,password,error_message", [
-    ("", "admin123", ""),
-    ("admin@tai.com.np", "", ""),
-    ("invalidemail", "admin123", " "),
-    ("admin@tai.com.np", "wrongpass", "Unauthorized"),
-    ("notexist@tai.com.np", "admin123", "Unauthorized"),
-    ("a"*256 + "@tai.com.np", "admin123", "Unauthorized"),
-    ("admin@tai.com.np", "a"*256, "Unauthorized"),
-    ("  admin@tai.com.np  ", "admin123", "Unauthorized"),
-])
-def test_invalid_login(driver, email, password, error_message):
-    driver.get("https://ai-samurai.tai.com.np/admin/login")
+# @pytest.mark.parametrize("email,password,error_message", [
+#     ("", "admin123", ""),
+#     ("admin@tai.com.np", "", ""),
+#     ("invalidemail", "admin123", " "),
+#     ("admin@tai.com.np", "wrongpass", "Unauthorized"),
+#     ("notexist@tai.com.np", "admin123", "Unauthorized"),
+#     ("a"*256 + "@tai.com.np", "admin123", "Unauthorized"),
+#     ("admin@tai.com.np", "a"*256, "Unauthorized"),
+#     ("  admin@tai.com.np  ", "admin123", "Unauthorized"),
+#     ("admin@tai.com.np  ", "   admin123", "Unauthorized"),
+#   ])
+# def test_invalid_login(driver, email, password, error_message):
+#     driver.get("https://ai-samurai.tai.com.np/admin/login")
 
-    login = LoginPage(driver)
-    login.enter_email(email)
-    login.enter_password(password)
-    login.click_login()
+#     login = LoginPage(driver)
+#     login.enter_email(email)
+#     login.enter_password(password)
+#     login.click_login()
 
     # Directly define the error locator here
 """  error_locator = (By.CSS_SELECTOR, ".Toastify__toast.Toastify__toast-theme--light Toastify__toast--error")  

@@ -100,3 +100,14 @@ def test_registration_form(driver):
 
 # # Confirm redirect occurred
 #     assert "/admin/students" in driver.current_url
+#navigate to the list to verify 
+    driver.get("https://ai-samurai.tai.com.np/admin/students")
+    try:
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, f"//td[contains(text(), '{test_data['email']}')]")
+            )
+        )
+    except TimeoutException:
+        assert False, "Registered student not found in the student list"
+
