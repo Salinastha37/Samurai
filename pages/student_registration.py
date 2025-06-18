@@ -13,7 +13,8 @@ class RegistrationPage:
         WebDriverWait(self.driver, 50).until(
             EC.presence_of_element_located((By.XPATH, "//*[@id='last-name']"))
         ).send_keys(data['last-name'])
-
+        # wait = WebDriverWait(self.driver, 50)
+        # wait.until(EC.presence_of_element_located((By.XPATH, "//*[@id='last-name']")))
         self.driver.find_element(By.XPATH, "//*[@id='firstName']").send_keys(data['firstName'])
         self.driver.find_element(By.XPATH, "//*[@id='lastNameKatakana']").send_keys(data['lastNameKatakana'])
         self.driver.find_element(By.XPATH, "//*[@id='firstNameKatakana']").send_keys(data['firstNameKatakana'])
@@ -28,12 +29,13 @@ class RegistrationPage:
                 button.click()
                 break
         
-        # Fill Date of Birth
+      #  Fill Date of Birth
         dob_value = data["dob"]
         dob_input = WebDriverWait(self.driver, 10).until(
         EC.presence_of_element_located((By.XPATH, "//input[@placeholder='YYYY/MM/DD']"))
        )
         dob_input.send_keys(dob_value)
+
 
 
         # Upload image
