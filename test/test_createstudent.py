@@ -12,7 +12,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 import re
-
+import time
 
 
 fake_en = Faker('en_US')
@@ -55,8 +55,11 @@ def test_registration_form(driver):
     
     driver.get("https://ai-samurai.tai.com.np/admin/login")
     login = LoginPage(driver)
+    time.sleep(1)
     login.enter_email("admin@tai.com.np")
+    time.sleep(2)
     login.enter_password("admin123")
+    time.sleep(3)
     login.click_login()
     
     #  Wait for URL to confirm successful login (update if the URL differs)
@@ -79,7 +82,7 @@ def test_registration_form(driver):
      
     wait = WebDriverWait(driver, 50)  # wait up to 10 seconds
     wait.until(EC.url_contains("/add-student"))
-    
+    time.sleep(1)
     driver.get("https://ai-samurai.tai.com.np/admin/add-student")
     reg_page = RegistrationPage(driver)
     
@@ -107,8 +110,11 @@ def test_registration_form(driver):
         "hobby": random.choice(["Reading", "Gaming", "Photography"]),
     }
 
+    time.sleep(2)
     reg_page.fill_registration_form(test_data)
+    time.sleep(2)
     reg_page.Register_Now()
+    time.sleep(2)
     
     # Optional: take a screenshot
     driver.save_screenshot("after_submission.png")
