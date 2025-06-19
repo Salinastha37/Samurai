@@ -2,7 +2,7 @@ import os
 import uuid
 import random
 import pytest
-import pykakasi
+from pykakasi import kakasi
 from faker import Faker
 from selenium import webdriver
 from pages.student_registration import RegistrationPage
@@ -12,19 +12,29 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 import re
-import time
+import time 
 
 
 fake_en = Faker('en_US')
 fake = Faker('ja_JP')
 # Convert to Katakana
+#Depreciated kakasi
+# def convert_to_katakana(name): 
+#     kakasi = pykakasi.kakasi()
+#     kakasi.setMode("H", "K")
+#     kakasi.setMode("a", "K")
+#     kakasi.setMode("r", "Hepburn")
+#     conv = kakasi.getConverter()
+#     return conv.do(name)
 def convert_to_katakana(name):
-    kakasi = pykakasi.kakasi()
-    kakasi.setMode("H", "K")
-    kakasi.setMode("a", "K")
-    kakasi.setMode("r", "Hepburn")
-    conv = kakasi.getConverter()
+    kakasi_inst = kakasi()
+    kakasi_inst.setMode("H", "K")  # Hiragana to Katakana
+    kakasi_inst.setMode("a", "K")  # ascii to Katakana
+    kakasi_inst.setMode("r", "Hepburn")  # romanization
+    kakasi_inst.setMode("c", True)  # add this for context-sensitive conversion
+    conv = kakasi_inst.getConverter()
     return conv.do(name)
+    return result
 
 def generate_unique_email():
     return f"user_{uuid.uuid4().hex}@test.com"
@@ -48,7 +58,7 @@ def valid_phone(number):
 def get_random_gender():
     return random.choice(["Male", "Female", "Other"])
 
-
+ 
 
 def test_registration_form(driver):
     
@@ -91,11 +101,13 @@ def test_registration_form(driver):
     phone = ''.join(filter(str.isdigit, raw_phone))[:11]
     assert valid_phone(phone), f"Generated phone number is invalid: {phone}"
 
+    last_name = fake_en.last_name()
+    first_name = fake_en.first_name()
     test_data = {
-        "last-name": fake_en.last_name(),
-        "firstName": fake_en.first_name(),
-        "lastNameKatakana": "タナカ",
-        "firstNameKatakana": "タロウ",
+        "last-name": last_name,
+        "firstName": first_name,
+        "lastNameKatakana":convert_to_katakana(last_name),
+        "firstNameKatakana": convert_to_katakana(first_name) ,
         "phone": phone,
         "email": generate_unique_email(),
         "gender": get_random_gender(),
@@ -110,7 +122,9 @@ def test_registration_form(driver):
         "hobby": random.choice(["Reading", "Gaming", "Photography"]),
     }
 
-    time.sleep(2)
+   
+
+    #time.sleep(2)
     reg_page.fill_registration_form(test_data)
     time.sleep(2)
     reg_page.Register_Now()
